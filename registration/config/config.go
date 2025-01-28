@@ -9,22 +9,24 @@ import (
 // Provide configs for environment-based variables (e.g., dotenv)
 
 type Config struct {
-	AppPort       string
-	DatabaseURL   string
-	KafkaBrokers  string
-	KafkaTopic    string
-	KafkaClientID string
-	JWTSecret     string
+	AppPort                string
+	DatabaseURL            string
+	KafkaBrokers           string
+	KafkaUserRegisterTopic string
+	KafkaUserLoginTopic    string
+	KafkaClientID          string
+	JWTSecret              string
 }
 
 func LoadConfig() *Config {
 	cfg := &Config{
-		AppPort:       getEnv("APP_PORT", "8080"),
-		DatabaseURL:   getEnv("DATABASE_URL", ""),
-		KafkaBrokers:  getEnv("KAFKA_BROKERS", ""),
-		KafkaTopic:    getEnv("KAFKA_TOPIC", "user-registration"),
-		KafkaClientID: getEnv("KAFKA_CLIENT_ID", "registration-service"),
-		JWTSecret:     getEnv("JWT_SECRET", ""),
+		AppPort:                getEnv("APP_PORT", "8080"),
+		DatabaseURL:            getEnv("DATABASE_URL", ""),
+		KafkaBrokers:           getEnv("KAFKA_BROKERS", ""),
+		KafkaUserRegisterTopic: getEnv("KAFKA_USER_REGISTER_TOPIC", "user.registered"),
+		KafkaUserLoginTopic:    getEnv("KAFKA_USER_LOGIN_TOPIC", "user.login"),
+		KafkaClientID:          getEnv("KAFKA_CLIENT_ID", "registration-service"),
+		JWTSecret:              getEnv("JWT_SECRET", ""),
 	}
 
 	validateConfig(cfg)

@@ -2,8 +2,12 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 
+	"github.com/azizkhan030/go-kafka/registration/config"
 	"github.com/azizkhan030/go-kafka/registration/db"
+	"github.com/azizkhan030/go-kafka/registration/kafka"
 	"github.com/azizkhan030/go-kafka/registration/middleware"
 	"github.com/azizkhan030/go-kafka/registration/models"
 	"github.com/azizkhan030/go-kafka/registration/utils"
@@ -49,6 +53,21 @@ func RegisterUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to register user",
 		})
+	}
+
+	event := map[string]interface{}{
+		"id":    user.ID,
+		"name":  user.Name,
+		"email": user.Email,
+	}
+
+	message, _ := json.Marshal(event)
+	topic := config.LoadConfig().KafkaUserRegisterTopic
+
+	err = kafka.Publish(message, topic)
+
+	if err != nil {
+		log.Printf("Failed to publish Kafka message: %v", err)
 	}
 
 	publicUser := models.PublicUser{
