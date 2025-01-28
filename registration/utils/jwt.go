@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/azizkhan030/go-kafka/registration/config"
@@ -9,7 +8,7 @@ import (
 )
 
 func GenerateToken(userID int) (string, error) {
-	jwtSecret := config.LoadConfig().JWTSecret
+	jwtSecret := []byte(config.LoadConfig().JWTSecret)
 
 	claims := jwt.MapClaims{
 		"userID": userID,
@@ -17,14 +16,14 @@ func GenerateToken(userID int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	fmt.Println("token:%v", jwtSecret)
 
 	return token.SignedString(jwtSecret)
 }
 
 func ParseToken(tokenStr string) (jwt.MapClaims, error) {
+	jwtSecret := []byte(config.LoadConfig().JWTSecret)
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		return config.LoadConfig().JWTSecret, nil
+		return jwtSecret, nil
 	})
 
 	if err != nil {

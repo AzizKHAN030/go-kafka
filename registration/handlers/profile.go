@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 
 	"github.com/azizkhan030/go-kafka/registration/db"
 	"github.com/azizkhan030/go-kafka/registration/models"
@@ -13,11 +14,13 @@ func GetProfile(c *fiber.Ctx) error {
 
 	userId := c.Locals("userID")
 
-	query := "SELECT * FROM users WHERE id=$1"
+	query := "SELECT id, name, email FROM users WHERE id=$1"
 	row := db.DB.QueryRow(context.Background(), query, userId)
-	if err := row.Scan(&user); err != nil {
+
+	if err := row.Scan(&user.Id, &user.Name, &user.Email); err != nil {
+		log.Printf("Failed to get user: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to register user",
+			"error": "Failed to get user",
 		})
 	}
 

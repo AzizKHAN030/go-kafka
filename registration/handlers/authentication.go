@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/azizkhan030/go-kafka/registration/db"
 	"github.com/azizkhan030/go-kafka/registration/utils"
@@ -39,10 +39,9 @@ func LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println("id:%v", userID)
-
 	token, err := utils.GenerateToken(userID)
 	if err != nil {
+		log.Fatalf("%s", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
 		})
