@@ -94,8 +94,10 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - kafka
-      - maildev
+      kafka:
+        condition: service_healthy
+      maildev:
+        condition: service_started
     networks:
       - app-network
   maildev:

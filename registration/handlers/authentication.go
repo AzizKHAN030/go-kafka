@@ -7,6 +7,7 @@ import (
 	"github.com/azizkhan030/go-kafka/registration/config"
 	"github.com/azizkhan030/go-kafka/registration/db"
 	"github.com/azizkhan030/go-kafka/registration/kafka"
+	"github.com/azizkhan030/go-kafka/registration/models"
 	"github.com/azizkhan030/go-kafka/registration/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,11 +25,11 @@ func LoginUser(c *fiber.Ctx) error {
 	}
 
 	var hashedPassword string
-	var userID int
+	var user models.PublicUser
 
-	query := "SELECT id, password FROM users WHERE email = $1"
+	query := "SELECT id, email, name, password FROM users WHERE email = $1"
 
-	err := db.DB.QueryRow(c.Context(), query, data.Email).Scan(&userID, &hashedPassword)
+	err := db.DB.QueryRow(c.Context(), query, data.Email).Scan(&user.Id, &user.Email, &user.Name, &hashedPassword)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -42,7 +43,7 @@ func LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := utils.GenerateToken(userID)
+	token, err := utils.GenerateToken(user.Id)
 	if err != nil {
 		log.Fatalf("%s", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -51,7 +52,9 @@ func LoginUser(c *fiber.Ctx) error {
 	}
 
 	event := map[string]interface{}{
-		"id": userID,
+		"id":    user.Id,
+		"email": user.Email,
+		"name":  user.Name,
 	}
 
 	message, _ := json.Marshal(event)
