@@ -3,8 +3,8 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  bin = "./tmp/main"
-  cmd = "go build -o ./tmp/main ./registration/cmd/registration"
+  bin = "./registration/tmp/main"
+  cmd = "go build -o ./registration/tmp/main ./registration/cmd/registration"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor"]
   exclude_file = []

@@ -50,7 +50,7 @@ services:
   registration-service:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./registration/Dockerfile
     container_name: registration-service
     ports:
       - "8080:8080"
@@ -58,8 +58,8 @@ services:
       APP_PORT: 8080
       DATABASE_URL: postgres://user:password@postgres:5432/registration_service
       KAFKA_BROKERS: kafka:9092
-      KAFKA_USER_REGISTER_TOPIK: user_registered
-      KAFKA_USER_LOGIN_TOPIK: user_login
+      KAFKA_USER_REGISTER_TOPIC: user_registered
+      KAFKA_USER_LOGIN_TOPIC: user_login
       KAFKA_CLIENT_ID: registration-service
       JWT_SECRET: secret123
     volumes:
@@ -72,6 +72,40 @@ services:
     networks:
       - app-network
 
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification/Dockerfile
+    container_name: notification-service
+    ports:
+      - "8081:8081"
+    environment:
+      APP_PORT: 8081
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_USER_REGISTER_TOPIC: user_registered
+      KAFKA_USER_LOGIN_TOPIC: user_login
+      KAFKA_CLIENT_ID: notification-service
+      SMTP_TYPE: test
+      SMTP_HOST: maildev
+      SMTP_PORT: 1025
+      SMTP_USERNAME: "admin"
+      SMTP_PASSWORD: "admin"
+      EMAIL_FROM: test@example.com
+    volumes:
+      - .:/app
+    depends_on:
+      - kafka
+      - maildev
+    networks:
+      - app-network
+  maildev:
+      image: maildev/maildev
+      container_name: maildev
+      ports:
+        - "1080:1080"  # Web interface
+        - "1025:1025"
+      networks:
+        - app-network
   kafka-exporter:
     image: danielqsj/kafka-exporter:latest
     container_name: kafka-exporter

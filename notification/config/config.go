@@ -5,28 +5,33 @@ import (
 	"os"
 )
 
-// Load Kafka broker and topic settings
-// Provide configs for environment-based variables (e.g., dotenv)
-
 type Config struct {
 	AppPort                string
-	DatabaseURL            string
 	KafkaBrokers           string
 	KafkaUserRegisterTopic string
 	KafkaUserLoginTopic    string
 	KafkaClientID          string
-	JWTSecret              string
+	SmtpHost               string
+	SmtpPort               string
+	SmtpUsername           string
+	SmtpPassword           string
+	EmailFrom              string
+	SmtpType               string
 }
 
 func LoadConfig() *Config {
 	cfg := &Config{
-		AppPort:                getEnv("APP_PORT", "8080"),
-		DatabaseURL:            getEnv("DATABASE_URL", ""),
+		AppPort:                getEnv("APP_PORT", "8081"),
 		KafkaBrokers:           getEnv("KAFKA_BROKERS", ""),
 		KafkaUserRegisterTopic: getEnv("KAFKA_USER_REGISTER_TOPIC", "user_registered"),
 		KafkaUserLoginTopic:    getEnv("KAFKA_USER_LOGIN_TOPIC", "user_login"),
 		KafkaClientID:          getEnv("KAFKA_CLIENT_ID", "registration-service"),
-		JWTSecret:              getEnv("JWT_SECRET", ""),
+		SmtpHost:               getEnv("SMTP_HOST", "SMTP"),
+		SmtpPort:               getEnv("SMTP_PORT", ""),
+		SmtpUsername:           getEnv("SMTP_USERNAME", ""),
+		SmtpPassword:           getEnv("SMTP_PASSWORD", ""),
+		SmtpType:               getEnv("SMTP_TYPE", "test"),
+		EmailFrom:              getEnv("EMAIL_FROM", ""),
 	}
 
 	validateConfig(cfg)
@@ -45,15 +50,15 @@ func getEnv(key string, defaultValue string) string {
 }
 
 func validateConfig(cfg *Config) {
-	if cfg.DatabaseURL == "" {
-		log.Fatal("DATABASE_URL is required!")
+	if cfg.SmtpHost == "" {
+		log.Fatal("SMTP_HOST is required!")
 	}
 
-	if cfg.KafkaBrokers == "" {
-		log.Fatal("KAFKA_BROKERS is required!")
+	if cfg.SmtpPort == "" {
+		log.Fatal("SMTP_PORT is required!")
 	}
 
-	if cfg.JWTSecret == "" {
-		log.Fatal("JWT_SECRET is required!")
+	if cfg.SmtpUsername == "" {
+		log.Fatal("SMTP_USERNAME is required!")
 	}
 }

@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 
+	"github.com/azizkhan030/go-kafka/registration/config"
 	"github.com/azizkhan030/go-kafka/registration/db"
+	"github.com/azizkhan030/go-kafka/registration/kafka"
 	"github.com/azizkhan030/go-kafka/registration/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -45,6 +48,19 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
 		})
+	}
+
+	event := map[string]interface{}{
+		"id": userID,
+	}
+
+	message, _ := json.Marshal(event)
+	topic := config.LoadConfig().KafkaUserLoginTopic
+
+	err = kafka.Publish(message, topic)
+
+	if err != nil {
+		log.Printf("Failed to publish Kafka message: %v", err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": token})

@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 
 # Expose the port your app runs on
-EXPOSE 8080
+EXPOSE 8081
 
 # Use Air to run the application
-CMD ["air", "-c", ".air.toml"]
+CMD ["air", "-c", "./notification/.air.toml"]

@@ -2,6 +2,7 @@ package kafka
 
 import (
 	"log"
+	"strings"
 
 	"github.com/IBM/sarama"
 )
@@ -20,7 +21,7 @@ func CreateTopics(brokers string, topics []string, partitionsNum int32, replicat
 			ReplicationFactor: replicationFactor,
 		}, false)
 
-		if err != nil && err != sarama.ErrTopicAlreadyExists {
+		if err != nil && !strings.Contains(err.Error(), sarama.ErrTopicAlreadyExists.Error()) {
 			log.Fatalf("Error creating topic %s: %v", topic, err)
 		}
 
