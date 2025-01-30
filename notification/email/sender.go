@@ -18,7 +18,7 @@ func SendWelcomeEmail(cfg config.Config, event UserRegisterEvent) error {
 	subject := "Welcome to Our Service!"
 	body := fmt.Sprintf("Hi %s, \n\n Thank you for registering! We're excited to have you. \n\nBest,\nAzizbek", event.Name)
 
-	err := sendEmail(cfg, cfg.EmailFrom, subject, body)
+	err := sendEmail(cfg, event.Email, subject, body)
 
 	if err != nil {
 		log.Printf("Failed to send email to %s: %v", event.Email, err)
