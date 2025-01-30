@@ -27,7 +27,7 @@ func main() {
 	defer kafka.CloseProducer()
 
 	topics := []string{}
-	topics = append(topics, cfg.KafkaUserLoginTopic, cfg.KafkaUserRegisterTopic)
+	topics = append(topics, cfg.KafkaUserLoginTopic, cfg.KafkaUserRegisterTopic, cfg.KafkaDQLTopic)
 
 	kafka.CreateTopics(cfg.KafkaBrokers, topics, 3, 1)
 

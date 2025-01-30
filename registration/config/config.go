@@ -15,6 +15,7 @@ type Config struct {
 	KafkaUserRegisterTopic string
 	KafkaUserLoginTopic    string
 	KafkaClientID          string
+	KafkaDQLTopic          string
 	JWTSecret              string
 }
 
@@ -26,6 +27,7 @@ func LoadConfig() *Config {
 		KafkaUserRegisterTopic: getEnv("KAFKA_USER_REGISTER_TOPIC", "user_registered"),
 		KafkaUserLoginTopic:    getEnv("KAFKA_USER_LOGIN_TOPIC", "user_login"),
 		KafkaClientID:          getEnv("KAFKA_CLIENT_ID", "registration-service"),
+		KafkaDQLTopic:          getEnv("KAFKA_DQL_TOPIC", "kafka_dql"),
 		JWTSecret:              getEnv("JWT_SECRET", ""),
 	}
 
