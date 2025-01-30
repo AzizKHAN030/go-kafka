@@ -32,10 +32,10 @@ git clone https://github.com/AzizKHAN030/go-kafka.git
 cd go-kafka
 ```
 
-### 2. Docker composer
+### 2. Docker compose
 
 ```bash
-docker-composer up --build
+docker-compose up --build
 ```
 
 ### 3. Example query
