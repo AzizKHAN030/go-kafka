@@ -24,7 +24,10 @@ func StartConsumer(cfg *config.Config) {
 	brokersURLSlice := strings.Split(cfg.KafkaBrokers, ",")
 	groupId := "notification-service-group"
 
-	consumerGroup, err := sarama.NewConsumerGroup(brokersURLSlice, groupId, nil)
+	config := sarama.NewConfig()
+	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+
+	consumerGroup, err := sarama.NewConsumerGroup(brokersURLSlice, groupId, config)
 	if err != nil {
 		log.Fatalf("Error starting kafka consumer group: %v", err)
 	}
